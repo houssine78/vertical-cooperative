@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright 2015-2016 Odoo S.A.
+     Copyright 2016 Jairo Llopis <jairo.llopis@tecnativa.com>
+     Copyright 2018 Rémy Taymans <remytaymans@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<openerp>
+
+  <!-- Add cooperator information -->
+  <template
+    id="website_portal_details_form"
+    name="Website Portal Details Form"
+    inherit_id="website_portal_v10.portal_layout">
+    <xpath expr="//div[@class='o_my_details']" position="after">
+      <div class="o_my_details_coop" t-if="coop.member">
+        <h3 class="page-header">Your Cooperator Details</h3>
+        <p class="text-center">
+          <span t-if="coop.member">
+            You are an effective cooperator
+          </span>
+          <span t-if="not coop.member">
+            You are not a cooperator
+          </span>
+        </p>
+        <p t-if="coop.cooperator_register_number">
+          <label>Cooperator Number: </label>
+          <t t-esc="coop.cooperator_register_number"/>
+        </p>
+        <p t-if="coop.effective_date">
+          <label>Cooperator Entrance Date: </label>
+          <span t-field="coop.effective_date"/>
+        </p>
+        <p t-if="coop.number_of_share">
+          <label>Number of Share: </label>
+          <t t-esc="coop.number_of_share"/>
+        </p>
+        <p t-if="coop.share_ids">
+          <div t-foreach="coop.share_ids" t-as="share">
+            <span t-field="share.effective_date"/>:
+            <t t-esc="share.share_number"/> x
+            <t t-esc="share.share_short_name"/>
+            (<span t-field="share.share_unit_price"
+              t-field-options='{
+                "widget": "monetary",
+                "display_currency": "coop.company_id.currency_id"
+              }'/>) -
+            <span t-field="share.total_amount_line"
+              t-field-options='{
+                "widget": "monetary",
+                "display_currency": "coop.company_id.currency_id"
+              }'/>
+          </div>
+        </p>
+        <p t-if="coop.total_value">
+          <label>Total Value of Share: </label>
+          <span t-field="coop.total_value"
+            t-field-options='{
+              "widget": "monetary",
+              "display_currency": "coop.company_id.currency_id"
+            }'/>
+        </p>
+
+        <p t-if="coop.gender">
+          <label>Gender: </label>
+          <t t-esc="coop.gender"/>
+        </p>
+        <p t-if="coop.birthdate">
+          <label>Date of Birth: </label>
+          <t t-esc="coop.birthdate"/>
+        </p>
+        <p t-if="coop_bank and coop_bank.acc_number">
+          <label>Bank Account: </label>
+          <t t-esc="coop_bank.acc_number"/>
+        </p>
+        <p t-if="coop.national_register_number">
+          <label>National Register Number: </label>
+          <t t-esc="coop.national_register_number"/>
+        </p>
+        <p t-if="coop.company_register_number">
+          <label>Company Register Number: </label>
+          <t t-esc="coop.company_register_number"/>
+        </p>
+        <p t-if="coop.representative">
+          <label>Legal Representative: </label>
+          <t t-esc="coop.representative"/>
+        </p>
+        <p class="text-center">
+          <a href="/my/cooperator_certificate/pdf" class="btn btn-default">
+            Cooperator Certificate
+          </a>
+        </p>
+      </div>
+    </xpath>
+  </template>
+
+  <!-- Release Capital Requests in the menu -->
+  <template
+      id="portal_my_home_menu_capital_release"
+      name="Portal Menu: Easy My Coop Capital Release"
+      inherit_id="website_portal_v10.portal_layout"
+      priority="20">
+    <xpath expr="//ul[contains(@class,'o_portal_submenu')]"
+        position="inside">
+      <li>
+        <a href="/my/release_capital_request">Capital Releases</a>
+      </li>
+    </xpath>
+  </template>
+
+  <!-- Release Capital Requests on the main page -->
+  <template
+      id="portal_my_home_capital_release"
+      name="Portal My Home : Easy My Coop Capital Release Requests"
+      inherit_id="website_portal_v10.portal_my_home"
+      priority="20">
+    <xpath expr="//div[contains(@class,'o_my_home_content')]"
+        position="inside">
+      <h3 class="page-header">
+        <a href="/my/release_capital_request">
+          Your Release Capital Requests
+          <small class="ml8">
+            <t t-if="capital_request_count">
+              <span class='badge'>
+                <t t-esc="capital_request_count"/>
+              </span>
+            </t>
+            <t t-if="not capital_request_count">
+              There are currently no release capital request for your
+              account.
+            </t>
+          </small>
+        </a>
+      </h3>
+    </xpath>
+  </template>
+
+  <!-- Release Capital Request page -->
+  <template id="portal_my_capital_releases" name="My Capital Releases">
+    <t t-call="website_portal_v10.portal_layout">
+      <h3 class="page-header">Your Capital Release Requests</h3>
+      <t t-if="not capital_requests">
+        <p>
+          There are currently no capital release request for your
+          account.
+        </p>
+      </t>
+      <t t-if="capital_requests">
+        <table class="table table-hover o_my_status_table">
+          <thead>
+            <tr class="active">
+              <th>Request #</th>
+              <th>Request Date</th>
+              <th>Due Date</th>
+              <th></th>
+              <th>Amount Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr t-foreach="capital_requests" t-as="capital_request">
+              <td>
+                <a t-att-href="'/my/release_capital_request/pdf/%s' %
+                  capital_request.id">
+                  <t t-esc="capital_request.number"/>
+                </a>
+              </td>
+              <td><span t-field="capital_request.date_invoice"/></td>
+              <td><span t-field="capital_request.date_due"/></td>
+              <td>
+                <t t-if="capital_request.state == 'open'">
+                  <span class="label label-info">
+                    <i class="fa fa-fw fa-clock-o"/> Waiting for Payment
+                  </span>
+                </t>
+                <t t-if="capital_request.state == 'paid'">
+                  <span class="label label-default">
+                    <i class="fa fa-fw fa-check"/> Paid
+                  </span>
+                </t>
+                <t t-if="capital_request.state == 'cancel'">
+                  <span class="label label-default">
+                    <i class="fa fa-fw fa-remove"/> Cancelled
+                  </span>
+                </t>
+              </td>
+              <td>
+                <span t-field="capital_request.residual"
+                    t-field-options='{
+                      "widget": "monetary",
+                      "display_currency": "capital_request.currency_id"
+                      }'/>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div t-if="pager" class="o_portal_pager text-center">
+          <t t-call="website.pager"/>
+        </div>
+      </t>
+    </t>
+  </template>
+
+</openerp>
