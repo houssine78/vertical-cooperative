@@ -104,7 +104,7 @@ class CooperatorWebsiteAccount(WebsiteAccount):
             tax_shelter,
             'easy_my_coop_taxshelter_report.tax_shelter_subscription_report'
         )
-        filename = "Subscription Certificate - %s - %d" % (
+        filename = "Subscription Certificate - %s - %s" % (
             partner.name,
             tax_shelter.declaration_id.fiscal_year
         )
@@ -134,7 +134,7 @@ class CooperatorWebsiteAccount(WebsiteAccount):
             tax_shelter,
             'easy_my_coop_taxshelter_report.tax_shelter_shares_report'
         )
-        filename = "Share Certificate - %s - %d" % (
+        filename = "Share Certificate - %s - %s" % (
             partner.name,
             tax_shelter.declaration_id.fiscal_year
         )
