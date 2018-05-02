@@ -179,7 +179,8 @@ class DocumentWebsite(http.Controller):
         return True
 
     def _is_authorized_user(self, user=None):
-        return user is not None and user.has_group('base.group_portal')
+        return user is not None and (user.has_group('base.group_portal')
+                                     or user.has_group('base.group_user'))
 
     def _get_archive_groups(self, model, domain=None, fields=None,
                             groupby="create_date", order="create_date desc"):
@@ -207,4 +208,3 @@ class DocumentWebsite(http.Controller):
                 'item_count': group[groupby + '_count']
             })
         return groups
-
