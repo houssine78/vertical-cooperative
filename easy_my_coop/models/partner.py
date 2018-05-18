@@ -110,7 +110,8 @@ class ResPartner(models.Model):
     effective_date = fields.Date(sting="Effective Date", compute='_compute_effective_date', store=True)
     representative = fields.Boolean(string="Legal Representative")
     subscription_request_ids = fields.One2many('subscription.request', 'partner_id', string="Subscription request")
-    
+    data_policy_approved = fields.Boolean(string="Approved Data Policy")
+
     @api.multi
     @api.depends('subscription_request_ids.state')
     def _compute_coop_candidate(self):
@@ -125,7 +126,7 @@ class ResPartner(models.Model):
                     is_candidate = False
              
             partner.coop_candidate = is_candidate
-            
+
     def has_representative(self):
         if self.child_ids.filtered('representative'):
             return True

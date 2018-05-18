@@ -233,6 +233,20 @@
 		                		            			            	                    
  						<br/>
 
+            <table style="margin-left:195px">
+                <label class="col-md-3 col-sm-4 control-label" for="data_policy_approved">Data Policy</label>
+                <tr>
+                  <td width="20%">
+                    <div class="form-group">
+                      <input type="checkbox" class="form-control" name="data_policy_approved" required="True" t-attf-value="#{data_policy_approved or ''}"/>
+                    </div>
+                  </td>
+                  <td width="80%">
+                    <div>Un petit mot pour expliquer les rgpd et un <a href="https://fr.wikipedia.org/wiki/Albert_Camus">lien vers la doc</a>.</div>
+                  </td>
+                </tr>
+            </table>
+
 						<table style="margin-left:195px">
 							<tr>
 								<td width="80%">
@@ -404,7 +418,7 @@
 			                </div>
 			            </div>
 			            
-	                    <div t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''}">
+									<div t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''}">
 			                <label class="col-md-3 col-sm-4 control-label" for="phone">Phone</label>
 			                <div class="col-md-7 col-sm-8 bottom-line" style="padding-bottom:20px">
 			                    <input type="text" class="form-control" name="phone" required="True" t-attf-value="#{phone or ''}" placeholder="e.g. (+32).81.81.37.00"/>
