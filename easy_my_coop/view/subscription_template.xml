@@ -137,7 +137,7 @@
 	                              <option t-att-value="langue.code" t-att-selected="langue.code == lang"><t t-esc="langue.name"/></option>
 	                          </t>
 	                      </select>
-						  <br/>	                      
+						  <br/>
 						  <div class="bottom-line" style="margin-left:25%;margin-top:35px;width:59%"></div>	                      
 	                    </div>
 
@@ -151,7 +151,7 @@
  			            <div t-attf-class="form-group #{error and 'zip_code' in error and 'has-error' or ''}">
 			                <label class="col-md-3 col-sm-4 control-label" for="zip_code">City</label>
 			                <div class="col-md-7 col-sm-8">
-								<table>			
+								<table>
 									<tr>
 										<td width="20%">
 											<input type="text" class="form-control mandatory-field" name="zip_code" required="True" t-attf-value="#{zip_code or ''}" placeholder="1030"/>
@@ -232,6 +232,26 @@
 		            	<div class="bottom-line" style="margin-left:178px;margin-top:0px;width:61%"></div>							                
 		                		            			            	                    
  						<br/>
+
+            <div t-attf-class="form-group" >
+                <label class="col-md-3 col-sm-4 control-label" for="data_policy_approved">Privacy Policy</label>
+                <div class="col-md-7 col-sm-8">
+                  <table>
+                    <tr>
+                      <td width='15%'>
+                        <input type="checkbox"
+                               class="form-control"
+                               name="data_policy_approved"
+                               required="True"
+                               t-attf-value="#{data_policy_approved or ''}"/>
+                      </td>
+                      <td width='85%'>
+                        La lucidité est la blessure la plus rapprochée du soleil.
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+            </div>
 
 						<table style="margin-left:195px">
 							<tr>
@@ -404,7 +424,7 @@
 			                </div>
 			            </div>
 			            
-	                    <div t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''}">
+									<div t-attf-class="form-group #{error and 'phone' in error and 'has-error' or ''}">
 			                <label class="col-md-3 col-sm-4 control-label" for="phone">Phone</label>
 			                <div class="col-md-7 col-sm-8 bottom-line" style="padding-bottom:20px">
 			                    <input type="text" class="form-control" name="phone" required="True" t-attf-value="#{phone or ''}" placeholder="e.g. (+32).81.81.37.00"/>

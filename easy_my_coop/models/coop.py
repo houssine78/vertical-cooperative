@@ -7,22 +7,26 @@ from openerp.exceptions import UserError, ValidationError
 
 import openerp.addons.decimal_precision as dp
 
-_REQUIRED = ['email','firstname','lastname','birthdate','address','share_product_id','ordered_parts','zip_code','city','iban','no_registre','gender']  # Could be improved including required from model
+# Could be improved including required from model
+_REQUIRED = ['email', 'firstname', 'lastname', 'birthdate', 'address',
+             'share_product_id', 'ordered_parts', 'zip_code', 'city',
+             'iban', 'no_registre', 'gender', 'data_policy_approved']
 
 @api.model
 def _lang_get(self):
     languages = self.env['res.lang'].search([])
     return [(language.code, language.name) for language in languages]
 
+
 class subscription_request(models.Model):
     _name = 'subscription.request'
     _description = 'Subscription Request'
-    
+
     def get_required_field(self):
         return _REQUIRED
-    
+
     @api.model
-    def create(self,vals):
+    def create(self, vals):
         if not vals.get('partner_id'):
             cooperator = False
             if vals.get('no_registre'):
@@ -30,7 +34,7 @@ class subscription_request(models.Model):
             if cooperator:
                 # TODO remove the following line of code once it has 
                 # been founded a way to avoid dubble entry
-                cooperator = cooperator[0] 
+                cooperator = cooperator[0]
                 if cooperator.member:
                     vals['type'] = 'increase'
                     vals['already_cooperator'] = True
@@ -51,7 +55,7 @@ class subscription_request(models.Model):
         confirmation_mail_template = mail_template_obj.search([('name', '=', 'Confirmation Email')])[0]
         confirmation_mail_template.send_mail(subscr_request.id)
         return subscr_request
-    
+
     @api.model
     def create_comp_sub_req(self, vals):
         if not vals.get('partner_id'):
@@ -65,7 +69,7 @@ class subscription_request(models.Model):
         confirmation_mail_template = mail_template_obj.search([('name', '=', 'Company Confirmation Email')])[0]
         confirmation_mail_template.send_mail(subscr_request.id, True)
         return subscr_request
-    
+
     def check_belgian_identification_id(self, nat_register_num):
         if not self.check_empty_string(nat_register_num):
             return False
@@ -81,12 +85,12 @@ class subscription_request(models.Model):
             if int(check_controle) != int(controle):
                 return False
         return True
-    
+
     def check_empty_string(self, value):
         if value == None or value == False or value == '':
             return False
         return True
-    
+
     @api.multi
     @api.depends('iban', 'no_registre','skip_control_ng','is_company',)
     def _validated_lines(self):
@@ -97,7 +101,7 @@ class subscription_request(models.Model):
                 validated = True
             except ValidationError:
                 validated = False
-            
+
             #if not sub_request.is_company:
             if sub_request.skip_control_ng or self.check_belgian_identification_id(sub_request.no_registre):
                 validated = True
@@ -109,8 +113,7 @@ class subscription_request(models.Model):
     def _compute_subscription_amount(self):
         for sub_request in self:
             sub_request.subscription_amount = sub_request.share_product_id.list_price * sub_request.ordered_parts
-    
-    already_cooperator = fields.Boolean(string="I'm already cooperator")  
+    already_cooperator = fields.Boolean(string="I'm already cooperator")
     name = fields.Char(string='Name', required=True)
     firstname = fields.Char(string='Firstname')
     lastname = fields.Char(string='Lastname')
@@ -144,12 +147,12 @@ class subscription_request(models.Model):
     no_registre = fields.Char(string='National Register Number')
     user_id = fields.Many2one('res.users', string='Responsible', readonly=True)
     validated = fields.Boolean(compute='_validated_lines', string='Valid Line?', readonly=True)
-    skip_control_ng = fields.Boolean(string="Skip control", 
+    skip_control_ng = fields.Boolean(string="Skip control",
                             help="if this field is checked then no control will be done on the national register number and on the iban bank account. To be done in case of the id card is from abroad or in case of a passport")
     lang = fields.Selection(_lang_get, 'Language', default='fr_BE',
         help="If the selected language is loaded in the system, all documents related to this contact will be printed in this language. If not, it will be English.")
     date = fields.Date(string='Subscription date request', default=lambda self: datetime.strftime(datetime.now(), '%Y-%m-%d'))
-    company_id = fields.Many2one('res.company', string='Company', required=True, 
+    company_id = fields.Many2one('res.company', string='Company', required=True,
                                  change_default=True, readonly=True,
                                  default=lambda self: self.env['res.company']._company_default_get())
     is_company = fields.Boolean(string='Is a company')
@@ -172,12 +175,17 @@ class subscription_request(models.Model):
     is_operation = fields.Boolean(string="Is Operation request")
     capital_release_request = fields.One2many('account.invoice','subscription_request', string='Subscription request')
     capital_release_request_date = fields.Date(string="Force the capital release request date",
-                                               help="Keep empty to use the current date", copy=False) 
+                                               help="Keep empty to use the current date", copy=False)
     source = fields.Selection([('website','Website'),
                                ('crm','CRM'),
                                ('manual','Manual')], string="Source", default="website")
+    data_policy_approved = fields.Boolean(
+        string='Data Policy Approved',
+        default=False,
+        # required=True,
+    )
     _order = "id desc"
-    
+
     def _prepare_invoice_line(self, product, partner, qty):
         self.ensure_one()
         res = {}
@@ -199,14 +207,14 @@ class subscription_request(models.Model):
             'product_id': product.id or False,
         }
         return res
-    
+
     def send_capital_release_request(self, invoice):
         invoice_email_template = self.env['mail.template'].search([('name', '=', 'Request to Release Capital - Send by Email')])[0]
-        
+
         # we send the email with the capital release request in attachment 
         invoice_email_template.send_mail(invoice.id, True)
         invoice.sent = True
-        
+
     def create_invoice(self, partner):
         # get subscription journal
         journal = self.env['account.journal'].search([('code','=','SUBJ')])[0]
@@ -216,9 +224,9 @@ class subscription_request(models.Model):
             account = self.company_id.property_cooperator_account
         else:
             account = self.env['account.account'].search([('code','=','416000')])[0]
-        
+
         # creating invoice and invoice lines
-        invoice_vals = {'partner_id':partner.id, 
+        invoice_vals = {'partner_id':partner.id,
                       'journal_id':journal.id,'account_id':account.id,
                       'type': 'out_invoice', 'release_capital_request':True,
                       'subscription_request':self.id}
@@ -233,56 +241,60 @@ class subscription_request(models.Model):
         invoice.signal_workflow('invoice_open')
 
         self.send_capital_release_request(invoice)
-        
-        return invoice 
-    
+
+        return invoice
+
     def get_partner_company_vals(self):
         # this should go to the many2many tag field
         #'title':'company',
         #self.env['res.partner.title'].search([('shortcut','=',self.company_type)])
-        partner_vals = {'name':self.company_name, 'is_company': self.is_company, 
+        partner_vals = {'name':self.company_name, 'is_company': self.is_company,
                         'company_register_number':self.company_register_number, 'customer':False,
                         'cooperator':True, 'street':self.address, 'zip':self.zip_code,
                         'city': self.city,'email':self.company_email, 'out_inv_comm_type':'bba','customer': self.share_product_id.customer,
-                        'out_inv_comm_algorithm':'random', 'country_id': self.country_id.id, 'lang':self.lang}
+                        'out_inv_comm_algorithm':'random', 'country_id': self.country_id.id, 'lang':self.lang,
+                        'data_policy_approved': self.data_policy_approved,
+}
         return partner_vals
-    
+
     def get_partner_vals(self):
         partner_vals = {'name':self.name, 'first_name':self.firstname, 'last_name': self.lastname,
                         'gender':self.gender,'cooperator':True, 'street':self.address,'zip':self.zip_code,
                         'city': self.city, 'phone': self.phone, 'email':self.email,
                         'national_register_number':self.no_registre, 'out_inv_comm_type':'bba',
                         'out_inv_comm_algorithm':'random', 'country_id': self.country_id.id,
-                        'lang':self.lang, 'birthdate':self.birthdate, 'customer': self.share_product_id.customer}
+                        'lang':self.lang, 'birthdate':self.birthdate, 'customer': self.share_product_id.customer,
+                        'data_policy_approved': self.data_policy_approved,
+ }
         return partner_vals
-    
+
     def create_coop_partner(self):
         partner_obj = self.env['res.partner']
-        
+
         if self.is_company:
             partner_vals = self.get_partner_company_vals()
-        else:    
+        else:
             partner_vals = self.get_partner_vals()
-        
+
         partner = partner_obj.create(partner_vals)
-        if self.iban : 
+        if self.iban :
             self.env['res.partner.bank'].create({'partner_id':partner.id,'acc_number':self.iban})
-        return partner 
-    
+        return partner
+
     def create_user(self, partner):
         user_obj = self.env['res.users']
-        
+
         email = self.email
         if self.is_company:
             email = self.company_email
-        
+
         user = user_obj.search([('login','=',email)])
         if not user:
             user_values = {'partner_id': partner.id,'login':email}
             user_id = user_obj.sudo()._signup_create_user(user_values)
             user = user_obj.browse(user_id)
             user.sudo().with_context({'create_user': True}).action_reset_password()
-        
+
         return True
 
     @api.one
@@ -308,11 +320,11 @@ class subscription_request(models.Model):
         else:
             partner = partner[0]
 
-        if self.is_company and not partner.has_representative(): 
+        if self.is_company and not partner.has_representative():
             contact = partner_obj.search([('national_register_number','=',self.no_registre)])
             if not contact:
                 contact_vals = {'name':self.name, 'first_name':self.firstname, 'last_name': self.lastname,
-                            'customer':False, 'is_company':False, 'cooperator':True, 
+                            'customer':False, 'is_company':False, 'cooperator':True,
                             'street':self.address,'zip':self.zip_code,'gender':self.gender,
                             'city': self.city, 'phone': self.phone, 'email':self.email,
                             'national_register_number':self.no_registre, 'out_inv_comm_type':'bba',
@@ -338,25 +350,25 @@ class subscription_request(models.Model):
     @api.one
     def block_subscription_request(self):
         self.write({'state':'block'})
-    
-    @api.one    
+
+    @api.one
     def unblock_subscription_request(self):
         self.write({'state':'draft'})
-        
-    @api.one    
+
+    @api.one
     def cancel_subscription_request(self):
         self.write({'state':'cancelled'})
-            
+
 class share_line(models.Model):
     _name='share.line'
-    
+
     @api.multi
     def _compute_total_line(self):
         res = {}
         for line in self:
             line.total_amount_line = line.share_unit_price * line.share_number
         return res
-    
+
     share_product_id = fields.Many2one('product.product', string='Share type', required=True, readonly=True)
     share_number = fields.Integer(string='Number of Share', required=True, readonly=True)
     share_short_name = fields.Char(related='share_product_id.short_name', string='Share type name')
@@ -364,16 +376,16 @@ class share_line(models.Model):
     effective_date = fields.Date(string='Effective Date', readonly=True)
     partner_id = fields.Many2one('res.partner',string='Cooperator', required=True, ondelete='cascade', readonly=True)
     total_amount_line = fields.Float(compute='_compute_total_line', string='Total amount line')
-    
-class subscription_register(models.Model):    
+
+class subscription_register(models.Model):
     _name= 'subscription.register'
-    
+
     @api.multi
     def _compute_total_line(self):
         res = {}
         for register_line in self:
             register_line.total_amount_line = register_line.share_unit_price * register_line.quantity
-            
+
     name = fields.Char(string='Register Number Operation', required=True, readonly=True)
     register_number_operation = fields.Integer(string='Register Number Operation', required=True, readonly=True)
     partner_id = fields.Many2one('res.partner',string='Cooperator', required=True, readonly=True)
@@ -389,10 +401,10 @@ class subscription_register(models.Model):
                              ('sell_back','Sell Back'),
                              ('convert','Conversion')],
                             string='Operation Type', readonly=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, 
+    company_id = fields.Many2one('res.company', string='Company', required=True,
                                  change_default=True, readonly=True,
                                  default=lambda self: self.env['res.company']._company_default_get())
     user_id = fields.Many2one('res.users', string='Responsible', readonly=True, default=lambda self: self.env.user)
-    
+
     _order = "register_number_operation asc"
-    
+

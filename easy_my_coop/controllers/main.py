@@ -182,11 +182,14 @@ class WebsiteSubscription(http.Controller):
         redirect = "easy_my_coop.becomecooperator"
         if is_company:
            redirect = "easy_my_coop.becomecompanycooperator"
-               
+
+        if kwargs.get('data_policy_approved', 'off') == 'on':
+            values['data_policy_approved'] = True
+
         if not kwargs.has_key('g-recaptcha-response') or not request.website.is_captcha_valid(kwargs['g-recaptcha-response']):
            values = self.fill_values(values,is_company)
            values["error_msg"] = "the captcha has not been validated, please fill in the captcha"
-           
+
            return request.website.render(kwargs.get("view_from", redirect), values)
         
         if not logged and kwargs.has_key('email'):
