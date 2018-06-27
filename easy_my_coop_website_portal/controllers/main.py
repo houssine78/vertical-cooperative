@@ -118,7 +118,7 @@ class CooperatorWebsiteAccount(WebsiteAccount):
         invoice_mgr = request.env['account.invoice']
         capital_request = invoice_mgr.sudo().browse(oid)
         try:
-            if capital_request.partner_id != partner:
+            if capital_request.partner_id != partner.commercial_partner_id:
                 raise Forbidden()
         except AccessError:
             raise Forbidden()
@@ -140,7 +140,7 @@ class CooperatorWebsiteAccount(WebsiteAccount):
         partner = request.env.user.partner_id
         report_mgr = request.env['report']
         pdf = report_mgr.sudo().get_pdf(
-            partner,
+            partner.commercial_partner_id,
             'easy_my_coop.cooperator_certificat_G001'
         )
         filename = "Cooperator Certificate - %s" % partner.name
