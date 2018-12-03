@@ -254,7 +254,7 @@ class subscription_request(models.Model):
         return partner_vals
     
     def get_partner_vals(self):
-        partner_vals = {'name':self.name, 'first_name':self.firstname, 'last_name': self.lastname,
+        partner_vals = {'name':self.name, 'firstname':self.firstname, 'lastname': self.lastname,
                         'gender':self.gender,'cooperator':True, 'street':self.address,'zip':self.zip_code,
                         'city': self.city, 'phone': self.phone, 'email':self.email,
                         'national_register_number':self.no_registre, 'out_inv_comm_type':'bba',
@@ -323,7 +323,7 @@ class subscription_request(models.Model):
                 if contact:
                     contact.type = 'representative'
             if not contact:
-                contact_vals = {'name':self.name, 'first_name':self.firstname, 'last_name': self.lastname,
+                contact_vals = {'name':self.name, 'firstname':self.firstname, 'lastname': self.lastname,
                             'customer':False, 'is_company':False, 'cooperator':True, 
                             'street':self.address,'zip':self.zip_code,'gender':self.gender,
                             'city': self.city, 'phone': self.phone, 'email':self.email,
