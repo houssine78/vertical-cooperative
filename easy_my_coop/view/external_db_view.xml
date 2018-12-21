@@ -1,0 +1,61 @@
+<openerp>
+	<data>
+		<menuitem name="Energiris" id="menu_main_energiris" sequence="40"/>
+		
+		<menuitem name="Configuration" id="menu_energiris_config"  parent="menu_main_energiris" sequence="20"/>
+		
+		<record id="external_db_form" model="ir.ui.view">
+            <field name="name">external.db.form</field>
+            <field name="model">external.db</field>
+            <field name="arch" type="xml">
+                <form string="External Database">
+                    <group>
+                    	<field name="name"/>
+	                    <field name="host"/>
+	                    <field name="port"/>
+	                    <field name="user"/>
+	                    <field name="password"/>
+	                    <field name="database"/>
+                    </group>
+                   	
+                   	<button name="test_connection" string="Test Connection" type="object" groups="base.group_user"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="external_db_tree" model="ir.ui.view">
+            <field name="name">external.db.tree</field>
+            <field name="model">external.db</field>
+            <field name="arch" type="xml">
+                <tree string="External Database">
+                	<field name="name"/>
+	                <field name="host"/>
+	                <field name="port"/>
+	                <field name="user"/>
+	                <field name="password"/>
+	                <field name="database"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="external_db_action" model="ir.actions.act_window">
+            <field name="name">External DB</field>
+            <field name="res_model">external.db</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="external_db_tree"/>
+        </record>
+	
+		<menuitem action="external_db_action" name="External Database" id="menu_energiris_ext_db"  parent="menu_energiris_config" sequence="10"/>
+		
+		<record model="ir.actions.act_window" id="action_energiris_email_templates">
+            <field name="name">Email Templates</field>
+            <field name="res_model">email.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="email_template.email_template_tree" />
+            <field name="search_view_id" ref="email_template.view_email_template_search"/>
+        </record>
+        
+        <menuitem id="menu_email_templates" parent="menu_energiris_config" action="action_energiris_email_templates" sequence="30" groups="group_energiris_manager"/>
+	</data>
+</openerp>

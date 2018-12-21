@@ -1,0 +1,49 @@
+<openerp>
+	<data>
+		<record id="subscription_register_tree" model="ir.ui.view">
+            <field name="name">subscription.register.tree</field>
+            <field name="model">subscription.register</field>
+            <field name="arch" type="xml">
+                <tree string="Subscription Register">
+	                <field name="name" invisible="True"/>
+	                <field name="register_number_operation"/>
+          			<field name="partner_id"/>
+          			<field name="quantity"/>
+          			<field name="date"/>
+          			<field name="type"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_subscription_register_filter" model="ir.ui.view">
+            <field name="name">subscription.register.select</field>
+            <field name="model">subscription.register</field>
+            <field name="arch" type="xml">
+                <search string="Search Subscription">
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="date" string="Date"/>
+                    <filter name="subscription" string="Subscription" domain="[('type','=','subscription')]"/>
+                    <filter name="transfer" string="Transfer" domain="[('state','=','transfer')]"/>
+                    <filter name="sell_back" string="Sell back" domain="[('state','=','sell_back')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Responsible" icon="terp-personal" domain="[]"  context="{'group_by':'user_id'}"/>
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]"  context="{'group_by':'type'}"/>
+                        <filter string="Date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+        <record id="subscription_register_action" model="ir.actions.act_window">
+            <field name="name">Subscription Register</field>
+            <field name="res_model">subscription.register</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="subscription_register_tree"/>
+            <field name="search_view_id" ref="view_subscription_register_filter"/>
+        </record>
+	
+		<menuitem action="subscription_register_action" name="Subscription Register" id="menu_energiris_subscription_register"  parent="menu_energiris_main_job_sync" sequence="20"/>
+	</data>
+</openerp>

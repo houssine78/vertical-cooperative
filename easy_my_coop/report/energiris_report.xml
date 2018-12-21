@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+      <data noupdate="0">
+        <!-- Cooperator Register Report -->
+        <report
+            auto="False"
+            id="energiris_wp_sync.cooperator_register"
+            model="res.partner"
+            name="energiris_wp_sync.cooperator_register"
+            file="energiris_wp_sync\report\mako\cooperator_register.mako"
+            string="Cooperators register report"
+        	attachment_use="0"
+            multi="True"
+            webkit_header="boss_report.boss_invoice_reports_portrait_header"       
+            report_type="webkit"
+            header="True"/>
+
+        <!-- Subscription Certificat Report -->
+        <report
+            auto="False"
+            id="energiris_wp_sync.subscription_certificat"
+            model="subscription.register"
+            name="energiris_wp_sync.subscription_certificat"
+            file="energiris_wp_sync\report\mako\subscription_certificat.mako"
+            string="Subscription Register Certificat"
+        	attachment_use="0"
+            multi="True"
+            webkit_header="boss_report.boss_invoice_reports_portrait_header"       
+            report_type="webkit"
+            header="True"/>
+        
+        <report
+            auto="False"
+            id="energiris_wp_sync.subscription_register"
+            model="subscription.register"
+            name="energiris_wp_sync.subscription_register"
+            file="energiris_wp_sync\report\mako\subscription_register.mako"
+            string="Subscription Register Report"
+        	attachment_use="0"
+            multi="True"
+            webkit_header="boss_report.boss_invoice_reports_portrait_header"       
+            report_type="webkit"
+            header="True"/>
+    </data>
+</openerp>

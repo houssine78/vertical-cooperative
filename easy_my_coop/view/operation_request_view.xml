@@ -1,0 +1,55 @@
+<openerp>
+	<data>
+		<record id="operation_request_tree" model="ir.ui.view">
+            <field name="name">operation.request.tree</field>
+            <field name="model">operation.request</field>
+            <field name="arch" type="xml">
+                <tree string="Operation requests" colors="red:approved == False; blue:state in ('draft');grey: state in ('done')">
+	                <field name="request_date"/>
+          			<field name="partner_id"/>
+          			<field name="operation_type"/>
+          			<field name="quantity"/>
+          			<field name="approved" invisible="True"/>
+          			<field name="user_id"/>
+          			<field name="state"/>
+                    <button type="object" icon="STOCK_MEDIA_PLAY" name="validate_operation" class="oe_kanban_image" attrs="{'invisible':['|',('state','!=','draft'),('approved','=',False)]}"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="operation_request_form" model="ir.ui.view">
+            <field name="name">operation.request.form</field>
+            <field name="model">operation.request</field>
+            <field name="arch" type="xml">
+        		<form string="Operation request" version="7.0">
+       				<header>
+	                    <field name="state" widget="statusbar" statusbar_visible="draft,done,cancelled,refused" statusbar_colors='{"draft":"grey","done":"green","cancelled":"orange","refused":"red"}'/>
+	                </header>
+       				<sheet>
+	       				<group>
+		       				<group>
+		       					<field name="request_date"/>
+			          			<field name="partner_id"/>
+			          			<field name="operation_type"/>
+			          			<field name="quantity"/>
+		       				</group>
+		       				<group>
+		       					<field name="approved"/>
+			          			<field name="user_id"/>
+		       				</group>
+		       			</group>
+       				</sheet>
+       			</form>
+            </field>
+        </record>    
+        
+        <record id="operation_request_action" model="ir.actions.act_window">
+            <field name="name">Operation request</field>
+            <field name="res_model">operation.request</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="operation_request_tree"/>
+        </record>
+	
+		<menuitem action="operation_request_action" name="Operation request" id="menu_energiris_operation_request" parent="menu_energiris_main_job_sync" sequence="20"/>
+	</data>
+</openerp>

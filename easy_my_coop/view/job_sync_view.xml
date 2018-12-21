@@ -1,0 +1,177 @@
+<openerp>
+	<data>
+		<menuitem name="Subscription" id="menu_energiris_main_job_sync" parent="menu_main_energiris" sequence="10" />
+		
+		<record id="job_sync_form" model="ir.ui.view">
+            <field name="name">job.sync.form</field>
+            <field name="model">job.sync</field>
+            <field name="arch" type="xml">
+                <form string="Job Sync" version="7.0">
+                    <header>
+	                   	<button name="run_job_sync" string="Run Job Sync" type="object" groups="base.group_user"/>
+                    </header>
+                    <sheet>
+	                	<group>
+		                    <group>
+			                    <field name="name"/>
+			                    <field name="source_id"/>
+			                    <field name="user_id"/>
+			                </group>
+			                <group>
+			                    <field name="date"/>
+		                     	<field name="job_sync_status"/>	
+			                    <field name="error_message" readonly="1"/>
+		                    </group>
+        				</group>
+        				<notebook>
+	                        <page string="Cooperator Subscriptions">
+	                    		<field name="job_sync_lines">
+	                    			<tree colors="red:validated == False; blue:state in ('draft');grey: state in ('done')">
+		                    			<field name="name"/>
+		                    			<field name="sync_date"/>
+		                    			<field name="type"/>
+		                    			<field name="ordered_parts"/>
+		                    			<field name="email"/>
+		                    			<field name="iban"/>
+		                    			<field name="partner_id"/>
+		                    			<field name="state"/>
+		                    			<field name="validated" />
+		                    			<button type="object" icon="STOCK_MEDIA_PLAY" name="validate_sync_line" class="oe_kanban_image" attrs="{'invisible':['|',('state','!=','draft'),('validated','=',False)]}"/>
+	                    			</tree>
+	                    			<form>
+	                    				<group>
+	                    					<field name="name"/>
+	                    					<field name="firstname"/>
+	                    					<field name="lastname"/>
+	                    					<field name="iban"/>
+	                    					<field name="no_registre"/>
+	                    					<field name="email"/>
+	                    					<field name="adresse"/>
+	                    					<field name="codepostal"/>
+	                    					<field name="ville"/>
+	                    					<field name="pays"/>
+	                    					<field name="phone"/>
+	                    					<field name="language"/>
+	                    				</group>
+	                    				<group>
+	                    					<field name="sync_date"/>
+	                    					<field name="ordered_parts"/>
+	                    					<field name="partner_id"/>
+	                    					<field name="type"/>
+	                    					<field name="state"/>
+	                    					<field name="job_sync_id"/>
+	                    					<field name="ext_id"/>
+	                    					<field name="error_message"/>
+	                    					<field name="user_login"/>
+	                    					<field name="user_status"/>
+	                    				</group>
+	                    			</form>
+	                    		</field>
+	                    	</page>
+	                    </notebook>
+                   	</sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="job_sync_tree" model="ir.ui.view">
+            <field name="name">job.sync.tree</field>
+            <field name="model">job.sync</field>
+            <field name="arch" type="xml">
+                <tree string="Job Synchronization">
+	                <field name="name"/>
+                    <field name="source_id"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <field name="job_sync_lines"/>
+                    <field name="job_sync_status"/>
+                </tree>
+            </field>
+        </record>
+        
+        
+        <record id="job_sync_action" model="ir.actions.act_window">
+            <field name="name">Job Sync</field>
+            <field name="res_model">job.sync</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="job_sync_tree"/>
+        </record>
+	
+		<menuitem action="job_sync_action" name="Job Sync" id="menu_energiris_job_sync"  parent="menu_energiris_main_job_sync" sequence="50"/>
+		
+		<record id="job_sync_line_tree" model="ir.ui.view">
+            <field name="name">job.sync.line.tree</field>
+            <field name="model">job.sync.line</field>
+            <field name="arch" type="xml">
+                <tree string="Cooperator Subscriptions Requests" colors="red:validated == False; blue:state in ('draft');grey: state in ('done')">
+	                <field name="name"/>
+	                <field name="sync_date"/>
+          			<field name="type"/>
+          			<field name="ordered_parts"/>
+          			<field name="email"/>
+          			<field name="iban"/>
+          			<field name="partner_id"/>
+          			<field name="state"/>
+          			<field name="validated"/>
+                    <button type="object" icon="STOCK_MEDIA_PLAY" name="validate_sync_line" class="oe_kanban_image" attrs="{'invisible':['|',('state','not in',['draft','waiting']),('validated','=',False)]}"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="job_sync_line_form" model="ir.ui.view">
+            <field name="name">job.sync.line.form</field>
+            <field name="model">job.sync.line</field>
+            <field name="arch" type="xml">
+        		<form string="Subscription Request" version="7.0">
+       				<header>
+       					<button type="object" name="validate_sync_line" string="Validate" class="oe_highlight" attrs="{'invisible':['|',('state','not in',['draft','waiting']),('validated','=',False)]}"/>
+       					<button type="object" name="action_waiting" states="draft" string="Waiting list"/>
+       					<button type="object" name="action_cancel" states="draft,waiting" string="Cancel"/>
+       					<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done" statusbar_colors='{"waiting":"blue","done":"green"}'/>
+       				</header>
+       				<sheet>
+	       				<group col="4">
+		       				<group>
+		       					<field name="name"/>
+		       					<field name="firstname"/>
+		       					<field name="lastname"/>
+		       					<field name="iban"/>
+		       					<field name="no_registre"/>
+		       					<field name="email"/>
+		       					<field name="adresse"/>
+		       					<field name="codepostal"/>
+		       					<field name="ville"/>
+		       					<field name="pays"/>
+		       					<field name="phone"/>
+		       					<field name="validated"/>
+		       					<field name="skip_control_ng"/>
+		       				</group>
+		       				<group>
+		       					<field name="sync_date"/>
+		       					<field name="ordered_parts"/>
+		       					<field name="partner_id"/>
+		       					<field name="type"/>
+		       					<!-- <field name="state"/> -->
+		       					<field name="job_sync_id"/>
+		       					<field name="ext_id"/>
+		       					<field name="error_message"/>
+		       					<field name="user_login"/>
+		       					<field name="user_status"/>
+		       					<field name="language"/>
+		       				</group>
+		       			</group>
+       				</sheet>
+       			</form>
+            </field>
+        </record>    
+        
+        <record id="job_sync_line_action" model="ir.actions.act_window">
+            <field name="name">Cooperator Subscription</field>
+            <field name="res_model">job.sync.line</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="job_sync_line_tree"/>
+        </record>
+	
+		<menuitem action="job_sync_line_action" name="Cooperator Subscription" id="menu_energiris_job_line_sync"  parent="menu_energiris_main_job_sync" sequence="10"/>
+	</data>
+</openerp>
