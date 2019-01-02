@@ -1,0 +1,401 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="0">
+
+<!-- ...................................BASE PORTRAIT.......................................... -->
+
+        <record id="boss_invoice_reports_portrait_header" model="ir.header_webkit">
+            <field name="footer_html"><![CDATA[
+
+ 	<head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+ 	</head>           
+ 
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table  style="border-top: 1px solid #24a9e1; width: 100%;font-size:10;text-align:center;color :#24a9e1;">
+            <tr >
+                <td><b>${company.partner_id.name |entity}</b></td>
+            </tr>
+            <tr onload="bank()">
+    %for bank in company.bank_ids :     
+         <% bank_company = bank.bank_name %> 
+         <% bank_account = bank.acc_number %>
+         <% bank_bic = bank.bank_bic %>      
+    %endfor
+                 <td>${company.partner_id.contact_address and company.partner_id.street or ''|entity} ${' | '} ${company.partner_id.contact_address and company.partner_id.zip or ''|entity} ${' '} ${company.partner_id.contact_address and company.partner_id.city or ''|entity} ${ ' - phone : '}${company.partner_id.contact_address and company.partner_id.phone or ''|entity} ${ ' - fax : '}${company.partner_id.contact_address and company.partner_id.fax or ''|entity} ${ ' | email : '}${company.partner_id.contact_address and company.partner_id.email or ''|entity} ${ '| Website : '}${company.partner_id.website or ''|entity} </td>
+            </tr>
+            <tr>
+                  <td>${ 'TVA : '} ${company.partner_id.vat or ''|entity}  ${ '| '} ${bank_company} ${' : '} ${bank_account} ${' | BIC '} ${bank_bic} </td>
+            </tr>           
+        </table>
+    </body>]]></field>
+            <field name="orientation">Portrait</field>
+            <field name="format">A4</field>
+            <field name="html"><![CDATA[
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+        <style type="text/css">
+            ${css}
+        </style>
+    </head>
+
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table class="header" style="border-bottom: 0px solid black; width: 100%">
+          <tr>      
+                <td style="width:50;" rowspan=3>${helper.embed_logo_by_name('company_logo')|n}</td>
+                <td style="text-align:left; vertical-align:top;padding-top:25px;padding-left:15px;font-size: 12px;">
+                    <b>${company.partner_id.name |entity}</b>
+                </td>
+          
+          <tr>
+                <td style="border-bottom: 1px solid #24a9e1" width:50px padding-left:15px></td>
+          </tr>
+          
+
+          </tr>
+                <td style="text-align:left; vertical-align:top;padding-top:5px;padding-left:15px;font-size: 12px;">
+                ${company.rml_header1 or ''|entity}
+                </td>
+          </tr>
+                        
+        </table> ${_debug or ''|n} </body>
+</html>]]>
+            </field>
+            <field eval="40.0" name="margin_top"/>
+            <field eval="15.0" name="margin_bottom"/>
+            <field name="css"><![CDATA[
+
+body {
+    font-family:calibri;
+    font-size: 12px;
+}
+
+table {
+    font-family:calibri;;
+    font-size: 12px;
+}
+
+.header {
+    margin-left: 0px;
+    text-align: left;
+    width: 300px;
+    font-size: 13px;
+}
+
+.footer {
+    font-size:8px;
+}
+
+.title {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.basic_table{
+    text-align: center;
+    border: 1px solid lightGrey;
+    border-collapse: collapse;
+}
+
+.basic_table th {
+    border: 1px solid lightGrey;
+    font-size: 12px;
+}
+
+.basic_table td {
+    border: 1px solid lightGrey;
+    font-size: 13px;
+}
+
+.list_table {
+    border-color: black;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.list_table td {
+    border-color: gray;
+    border-top: 1px solid gray;
+    text-align: left;
+    font-size: 13px;
+    padding-right: 3px;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-bottom:3px;
+}
+
+.list_table th {
+    border-bottom: 2px solid black;
+    text-align: left;
+    font-size: 13px;
+    font-weight: bold;
+    padding-right: 3px
+    padding-left: 3px
+}
+
+.list_table thead {
+    display: table-header-group;
+}
+
+.address table {
+    font-size: 13px;
+    border-collapse: collapse;
+    margin: 0px;
+    padding: 0px;
+}
+
+.address .shipping {
+
+}
+
+.address .invoice {
+    margin-top: 13px;
+}
+
+.address .recipient {
+    margin-right: 200px;
+    float: right;
+}
+
+table .address_title {
+    font-weight: bold;
+}
+
+.address td.name {
+    font-weight: bold;
+}
+
+td.amount, th.amount {
+    text-align: right;
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+tr.line .note {
+    border-style: none;
+    font-size: 10px;
+    padding-left: 10px;
+}
+
+tr.line {
+    margin-bottom: 10px;
+}
+
+]]>
+            </field>
+            <field name="name">Boss Invoice Reports Portrait Header</field>
+        </record>
+
+
+        <record id="boss_financial_reports_portrait_header" model="ir.header_webkit">
+            <field name="footer_html"><![CDATA[
+
+ 	<head>
+        
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+    </head>
+    <% import datetime %>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table style="border-top: 1px solid black; width: 1080px">
+            <tr style="border-collapse:collapse;">
+                <td style="text-align:left;font-size:10;width:350px;">${formatLang( str(datetime.datetime.today()), date_time=True)}</td>
+                <td style="text-align:center;font-size:10;width:350px;">${user.name}</td>
+                <td style="text-align:right;font-size:10;width:350px;">Page&nbsp;<span class="page"/></td>
+                <td style="text-align:left;font-size:10;width:30px">&nbsp;of&nbsp;<span class="topage"/></td>
+            </tr>
+        </table>
+    </body>]]></field>
+            <field name="orientation">Portrait</field>
+            <field name="format">A4</field>
+            <field name="html"><![CDATA[
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+        <script>
+            function subst() {
+            var vars={};
+            var x=document.location.search.substring(1).split('&');
+            for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+            var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+            for(var i in x) {
+            var y = document.getElementsByClassName(x[i]);
+            for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+                }
+            }
+        </script>
+        <style type="text/css">
+            ${css}
+        </style>
+    </head>
+    <body style="border:0; margin: 0;" onload="subst()">
+        <table class="header" style="border-bottom: 0px solid black; width: 100%">
+            <tr>
+                <td style="text-align:left; font-size:11px; font-weight: bold;"><span style="text-transform:uppercase; font-size:12px;">${report_name} ${'test'}</span></td>
+                <td style="text-align:right> - ${company.partner_id.name | entity} - ${company.currency_id.name | entity}</td>
+            </tr>
+        </table> ${_debug or ''|n} </body>
+</html>]]>
+            </field>
+            <field eval="10.0" name="margin_top"/>
+            <field eval="10.0" name="margin_bottom"/>
+            <field name="css"><![CDATA[
+
+body, table, td, span, div {
+    font-family: calibri;
+}
+
+.act_as_table {
+    display: table;
+}
+.act_as_row  {
+    display: table-row;
+}
+.act_as_cell {
+    display: table-cell;
+}
+.act_as_thead {
+    display: table-header-group;
+    font-weight: bold;
+}
+.act_as_tbody {
+    display: table-row-group;
+}
+.act_as_tfoot {
+    display: table-footer-group;
+}
+.act_as_caption {
+    display: table-caption;
+}
+act_as_colgroup {
+    display: table-column-group;
+}
+
+.list_table, .data_table {
+    width: 1080px;
+    table-layout: fixed
+}
+
+.bg, .act_as_row.labels {
+    background-color:#b6c3ed;
+}
+
+.list_table, .data_table, .list_table .act_as_row {
+    border-left:0px;
+    border-right:0px;
+    text-align:left;
+    font-size:11px;
+    padding-right:3px;
+    padding-left:3px;
+    padding-top:2px;
+    padding-bottom:2px;
+    border-collapse:collapse;
+}
+
+.list_table .act_as_row.labels, .list_table .act_as_row.initial_balance, .list_table .act_as_row.lines {
+    border-color:gray;
+    border-bottom:1px solid lightGrey;
+}
+
+.data_table .act_as_cell {
+    border: 1px solid lightGrey;
+    text-align: center;
+}
+
+.data_table .act_as_cell, .list_table .act_as_cell {
+    word-wrap: break-word;
+}
+
+.data_table .act_as_row.labels {
+    font-weight: bold;
+}
+
+.initial_balance .act_as_cell {
+    font-style:italic;
+}
+
+.account_title {
+    font-size:12px;
+    font-weight:bold;
+    page-break-after: avoid;
+}
+
+.act_as_cell.amount {
+    word-wrap:normal;
+    text-align:right;
+}
+
+.list_table .act_as_cell{
+    padding-left: 5px;
+*/  border-right:1px solid lightGrey;  uncomment to active column lines */
+}
+.list_table .act_as_cell.first_column {
+    padding-left: 0px;
+*/  border-left:1px solid lightGrey; uncomment to active column lines */
+}
+
+.sep_left {
+    border-left: 1px solid lightGrey;
+}
+
+.overflow_ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.open_invoice_previous_line {
+    font-style: italic;
+}
+
+.clearance_line {
+    font-style: italic;
+}
+
+]]>
+            </field>
+            <field name="name">Boss Financial Reports Portrait Header</field>
+        </record>
+
+
+    </data>
+</openerp>

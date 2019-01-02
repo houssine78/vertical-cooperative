@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+      <data noupdate="1">
+        <!-- replace by account.account_invoices -->
+        <report
+            auto="False"
+            id="account.account_invoices"
+            model="account.invoice"
+            name="account.invoice.webkit"
+            file="boss_report\mako\account_invoice_boss_classic.mako"
+            string="Invoices"
+            attachment="(object.state in ('open','paid')) and ('FV'+(object.number or '').replace('/',''))"
+            attachment_use="1"
+            multi="True"
+            webkit_header="boss_report.boss_invoice_reports_portrait_header"
+            report_type="webkit"/>
+        
+        <!-- replace --> 
+        <report
+            auto="False"
+        	id="account_financial_report_webkit.account_report_trial_balance_webkit"
+			model="account.account"
+            name="account.account_report_trial_balance_webkit"
+        	file="boss_report\mako\account_boss_trial_balance.mako"
+        	string="Trial Balances"
+        	attachment_use="0"
+            multi="True"
+            webkit_header="boss_financial_reports_portrait_header"       
+        	report_type="webkit"/>
+    </data>
+</openerp>
+
