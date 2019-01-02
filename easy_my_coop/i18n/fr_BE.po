@@ -1,5 +1,5 @@
 
-#. module: energiris_wp_sync
-#: view:account.invoice:0 model:ir.model,name:energiris_wp_sync.model_account_invoice
+#. module: easy_my_coop
+#: view:account.invoice:0 model:ir.model,name:easy_my_coop.model_account_invoice
 msgid "Invoice"
 msgstr "Facture"
