@@ -2,7 +2,8 @@
 ##############################################################################
 #
 #    BOSS, Business Open Source Solution
-#    Copyright (C) 2013-2014 BOSS Consulting SPRL.
+#    Copyright (C) 2013-2017 Open Architects Consulting SPRL.
+#    Copyright (C) 2018-     Coop IT Easy SCRLfs
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,7 +20,7 @@
 #
 ##############################################################################
 {
-    "name": "Energiris WordPress Sync",
+    "name": "Easy MY Coop",
     "version": "1.0",
     "depends": ["base", 
                 "sale", 
@@ -30,7 +31,7 @@
                 "base_iban",
                 "base_iban_bic_not_required",
                 "boss_report"],
-    "author": "Houssine BAKKALI <houssine.bakkali@gmail.com>",
+    "author": "Houssine BAKKALI <houssine@coopiteasy.coop>",
     "category": "Connector",
     "description": """
     Aim to allow the synchronisation between Wordpress users and OpenERP.    
@@ -54,5 +55,4 @@
         'wizard/export_global_wizard.xml'
     ],
     'installable': True,
-    'active': False,
 }

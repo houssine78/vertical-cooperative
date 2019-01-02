@@ -4,10 +4,10 @@
         <!-- Cooperator Register Report -->
         <report
             auto="False"
-            id="energiris_wp_sync.cooperator_register"
+            id="easy_my_coop.cooperator_register"
             model="res.partner"
-            name="energiris_wp_sync.cooperator_register"
-            file="energiris_wp_sync\report\mako\cooperator_register.mako"
+            name="easy_my_coop.cooperator_register"
+            file="easy_my_coop\report\mako\cooperator_register.mako"
             string="Cooperators register report"
         	attachment_use="0"
             multi="True"
@@ -18,10 +18,10 @@
         <!-- Subscription Certificat Report -->
         <report
             auto="False"
-            id="energiris_wp_sync.subscription_certificat"
+            id="easy_my_coop.subscription_certificat"
             model="subscription.register"
-            name="energiris_wp_sync.subscription_certificat"
-            file="energiris_wp_sync\report\mako\subscription_certificat.mako"
+            name="easy_my_coop.subscription_certificat"
+            file="easy_my_coop\report\mako\subscription_certificat.mako"
             string="Subscription Register Certificat"
         	attachment_use="0"
             multi="True"
@@ -31,10 +31,10 @@
         
         <report
             auto="False"
-            id="energiris_wp_sync.subscription_register"
+            id="easy_my_coop.subscription_register"
             model="subscription.register"
-            name="energiris_wp_sync.subscription_register"
-            file="energiris_wp_sync\report\mako\subscription_register.mako"
+            name="easy_my_coop.subscription_register"
+            file="easy_my_coop\report\mako\subscription_register.mako"
             string="Subscription Register Report"
         	attachment_use="0"
             multi="True"

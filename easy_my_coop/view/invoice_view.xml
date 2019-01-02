@@ -106,7 +106,7 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
             	<page string="Payments" position="after">
-					<page string="Subscription" groups="energiris_wp_sync.group_energiris_manager">
+					<page string="Subscription" groups="easy_my_coop.group_energiris_manager">
 						<field name="subscription_request"/>
 					</page>            	
             	</page>
